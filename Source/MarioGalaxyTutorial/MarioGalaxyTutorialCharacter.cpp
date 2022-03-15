@@ -8,12 +8,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-
 //////////////////////////////////////////////////////////////////////////
 // AMarioGalaxyTutorialCharacter
 
 AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 {
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -26,11 +26,14 @@ AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+	GetCharacterMovement()->GravityScale = 0.0f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -46,6 +49,24 @@ AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
+
+
+void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
+	Super::Tick(deltaTime);
+	FVector characterForward = RootComponent->GetForwardVector();
+
+	FVector pos = this->GetActorLocation();
+	FVector up = pos;
+	up.Normalize(1);
+	FVector right = FVector::CrossProduct(up, characterForward);
+	FVector forward = FVector::CrossProduct(right, characterForward);
+
+	FTransform newTransform(forward,right,up,pos);
+
+	USkeletalMeshComponent* skeletal = Cast<USkeletalMeshComponent>(RootComponent);
+	skeletal->AddForce(-up * 9.81f * deltaTime);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
