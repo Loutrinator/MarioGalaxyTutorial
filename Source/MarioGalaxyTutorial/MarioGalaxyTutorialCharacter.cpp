@@ -8,6 +8,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include <Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
+#include "DrawDebugHelpers.h"
+
 //////////////////////////////////////////////////////////////////////////
 // AMarioGalaxyTutorialCharacter
 
@@ -48,6 +51,8 @@ AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+
 }
 
 
@@ -55,19 +60,29 @@ void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
 	Super::Tick(deltaTime);
 
 	if (RootComponent == nullptr) GEngine->AddOnScreenDebugMessage(0, 2.5, FColor::Red, "RootComponent nullptr");
+
 	FVector characterForward = RootComponent->GetForwardVector();
 
-	FVector pos = this->GetActorLocation();
+	FVector pos = GetActorLocation();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, pos.ToString());
 	FVector up = pos;
 	up.Normalize();
+	DrawDebugLine(GetWorld(), pos, pos + up*100, FColor::Green, false, 5.f, ECC_WorldStatic, 1.f);
+
+
 	FVector right = FVector::CrossProduct(up, characterForward);
 	FVector forward = FVector::CrossProduct(right, characterForward);
+	FRotator Rot = UKismetMathLibrary::MakeRotFromXZ(forward, up);
+	this->SetActorRotation(Rot);
+	
+	//USkeletalMeshComponent* skeletal = this->FindComponentByClass<USkeletalMeshComponent>();
+	//FTransform newTransform(forward, right, up, pos);
 
-	FTransform newTransform(forward,right,up,pos);
-	USkeletalMeshComponent* skeletal = this->FindComponentByClass<USkeletalMeshComponent>();
-
-	FVector gravity = -up * 9.81f * 20.0f;
-	this->GetMovementComponent()->Velocity = GetActorLocation() + gravity;
+	/*
+	
+	*/
+	//FVector gravity = -up * 9.81f * 20.0f;
+	//this->GetMovementComponent()->Velocity = GetActorLocation() + gravity;
 	//this->LaunchCharacter(,false,false);
 }
 
