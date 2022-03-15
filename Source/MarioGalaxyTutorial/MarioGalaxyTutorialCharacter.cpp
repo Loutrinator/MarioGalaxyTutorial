@@ -53,18 +53,22 @@ AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 
 void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
 	Super::Tick(deltaTime);
+
+	if (RootComponent == nullptr) GEngine->AddOnScreenDebugMessage(0, 2.5, FColor::Red, "RootComponent nullptr");
 	FVector characterForward = RootComponent->GetForwardVector();
 
 	FVector pos = this->GetActorLocation();
 	FVector up = pos;
-	up.Normalize(1);
+	up.Normalize();
 	FVector right = FVector::CrossProduct(up, characterForward);
 	FVector forward = FVector::CrossProduct(right, characterForward);
 
 	FTransform newTransform(forward,right,up,pos);
+	USkeletalMeshComponent* skeletal = this->FindComponentByClass<USkeletalMeshComponent>();
 
-	USkeletalMeshComponent* skeletal = Cast<USkeletalMeshComponent>(RootComponent);
-	skeletal->AddForce(-up * 9.81f * deltaTime);
+	FVector gravity = -up * 9.81f * 20.0f;
+	this->GetMovementComponent()->Velocity = GetActorLocation() + gravity;
+	//this->LaunchCharacter(,false,false);
 }
 
 
