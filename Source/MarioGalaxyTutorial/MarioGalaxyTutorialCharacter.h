@@ -29,6 +29,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	UPROPERTY(EditAnywhere)
+	float distanceFromPlayer = 0;
+
+	
 	virtual void Tick(float dDeltaTime) override;
 
 protected:
