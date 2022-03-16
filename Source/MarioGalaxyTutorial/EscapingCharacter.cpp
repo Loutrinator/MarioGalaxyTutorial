@@ -22,11 +22,18 @@ void AEscapingCharacter::BeginPlay()
 void AEscapingCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-    {
-		UE_LOG(LogTemp, Log, TEXT("Object name : %s"), Iterator->Get()->GetFName());
-		
-    }
+
+	float speed = 1;
+
+	float playerDist = GetDistanceTo(GetWorld()->GetFirstPlayerController());
+	if(playerDist > 10) return;
+	
+	auto playerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	auto direction = GetActorLocation() - playerLocation;
+	direction.Z = 0;
+	direction.Normalize();
+
+	SetActorLocation(GetActorLocation() + direction * speed);
 }
 
 // Called to bind functionality to input
