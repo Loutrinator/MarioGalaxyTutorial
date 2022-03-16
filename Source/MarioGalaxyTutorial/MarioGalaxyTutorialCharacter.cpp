@@ -64,10 +64,10 @@ void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
 	FVector characterForward = RootComponent->GetForwardVector();
 
 	FVector pos = GetActorLocation();
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, pos.ToString());
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, pos.ToString());
 	FVector up = pos;
 	up.Normalize();
-	DrawDebugLine(GetWorld(), pos, pos + up*100, FColor::Green, false, 5.f, ECC_WorldStatic, 1.f);
+	DrawDebugLine(GetWorld(), pos, pos + up*100, FColor::Green, false, deltaTime, ECC_WorldStatic, 1.f);
 
 
 	FVector right = FVector::CrossProduct(up, characterForward);
@@ -80,8 +80,10 @@ void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
 	
 	//FTransform newTransform(forward, right, up, pos);
 
-	FVector gravity = -up * 9.81f * 20.0f;
-	skeletal->SetPhysicsLinearVelocity(GetActorLocation() + gravity,true);
+	FVector gravity = -up * 9.81f * 100.f;
+	DrawDebugLine(GetWorld(), pos, pos + gravity*100, FColor::Yellow, false, deltaTime, ECC_WorldStatic, 3.f);
+	skeletal->SetPhysicsLinearVelocity(gravity,true);
+	GetCharacterMovement()->AddForce(gravity);
 	/*
 	
 	*/
