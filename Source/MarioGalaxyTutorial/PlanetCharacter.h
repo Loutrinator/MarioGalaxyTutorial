@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "PlanetCharacter.generated.h"
 
+class UTextBlock;
 /**
  * 
  */
@@ -19,6 +20,7 @@ private:
 	UCapsuleComponent* capsule;
 	FVector ForwardMovementDirection;
 	float RotationValue;
+	int nbCatched;
 	
 public:
 	APlanetCharacter();
@@ -37,6 +39,12 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	bool enableMovement = true;
+
+	UFUNCTION(BlueprintPure, meta = (DisplayName = "Adds floats", CompactNodeTitle = "Add Floats", Keywords = "Float Add"), Category = Game)
+		static float AddFloats(float fA, float fB);
+	
+	int GetCatchedCount();
+	void CatchEscapingPawn();
 	
 protected:
 	// APawn interface
