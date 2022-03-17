@@ -6,36 +6,36 @@
 APlanetCharacter::APlanetCharacter()
 {
 	capsule = FindComponentByClass<UCapsuleComponent>();
+	nbCatched = 0;
 }
 
 // Called every frame
 void APlanetCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FVector zero(0,0,0);
-	ForwardMovementDirection = FMath::Lerp(ForwardMovementDirection,zero, DeltaTime* LerpSpeed);
-	RotationValue = FMath::Lerp(RotationValue,0.f, DeltaTime * LerpSpeed);
+	FVector zero(0, 0, 0);
+	ForwardMovementDirection = FMath::Lerp(ForwardMovementDirection, zero, DeltaTime * LerpSpeed);
+	RotationValue = FMath::Lerp(RotationValue, 0.f, DeltaTime * LerpSpeed);
 
-	if(enableRotation)
+	if (enableRotation)
 	{
-		FQuat quaternion(GetActorUpVector(),RotationValue * DeltaTime * RotationSpeed);
+		FQuat quaternion(GetActorUpVector(), RotationValue * DeltaTime * RotationSpeed);
 		quaternion = FMath::Lerp(quaternion * GetActorQuat(), GetActorQuat(), DeltaTime * LerpSpeed);
 		SetActorRotation(quaternion);
 	}
 
-	if(enableMovement)
+	if (enableMovement)
 	{
-		const FVector NewLocation =	GetActorLocation() + (ForwardMovementDirection * DeltaTime * MovementSpeed);
+		const FVector NewLocation = GetActorLocation() + (ForwardMovementDirection * DeltaTime * MovementSpeed);
 		SetActorLocation(NewLocation);
 	}
 	//capsule->SetPhysicsAngularVelocity(FVector());
 	//SetActorRotation();
-	
 }
 
 void APlanetCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, "SetupPlayerInputComponent");
+	//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, "SetupPlayerInputComponent");
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlanetCharacter::Jump);
@@ -70,22 +70,37 @@ void APlanetCharacter::MoveForward(float Value)
 		// get forward vector
 		const FVector Direction = GetActorForwardVector();
 
-		ForwardMovementDirection = Direction*Value;
+		ForwardMovementDirection = Direction * Value;
 	}
 }
 
 void APlanetCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		
+
 		// add movement in that direction
 		RotationValue = Value;
 	}
+}
+
+int APlanetCharacter::GetCatchedCount()
+{
+	return nbCatched;
+}
+
+void APlanetCharacter::CatchEscapingPawn()
+{
+	++nbCatched;
+}
+
+float APlanetCharacter::AddFloats(float fA, float fB)
+{
+	return fA + fB;
 }
