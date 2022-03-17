@@ -8,6 +8,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include <Runtime/Engine/Classes/Kismet/KismetMathLibrary.h>
+#include "DrawDebugHelpers.h"
+
 //////////////////////////////////////////////////////////////////////////
 // AMarioGalaxyTutorialCharacter
 
@@ -48,6 +51,8 @@ AMarioGalaxyTutorialCharacter::AMarioGalaxyTutorialCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+
 }
 
 
@@ -55,19 +60,34 @@ void AMarioGalaxyTutorialCharacter::Tick(float deltaTime) {
 	Super::Tick(deltaTime);
 
 	if (RootComponent == nullptr) GEngine->AddOnScreenDebugMessage(0, 2.5, FColor::Red, "RootComponent nullptr");
+
 	FVector characterForward = RootComponent->GetForwardVector();
 
-	FVector pos = this->GetActorLocation();
+	FVector pos = GetActorLocation();
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, pos.ToString());
 	FVector up = pos;
 	up.Normalize();
+	DrawDebugLine(GetWorld(), pos, pos + up*100, FColor::Green, false, deltaTime, ECC_WorldStatic, 1.f);
+
+
 	FVector right = FVector::CrossProduct(up, characterForward);
-	FVector forward = FVector::CrossProduct(right, characterForward);
-
-	FTransform newTransform(forward,right,up,pos);
+	FVector forward = FVector::CrossProduct(right, up);
+	FRotator Rot = UKismetMathLibrary::MakeRotFromXZ(forward, up);
+	this->SetActorRotation(Rot);
+	
 	USkeletalMeshComponent* skeletal = this->FindComponentByClass<USkeletalMeshComponent>();
+	if(skeletal == nullptr) GEngine->AddOnScreenDebugMessage(0, 2.5, FColor::Red, "USkeletalMeshComponent nullptr");
+	
+	//FTransform newTransform(forward, right, up, pos);
 
-	FVector gravity = -up * 9.81f * 20.0f;
-	this->GetMovementComponent()->Velocity = GetActorLocation() + gravity;
+	FVector gravity = -up * 9.81f * 100.f;
+	DrawDebugLine(GetWorld(), pos, pos + gravity*100, FColor::Yellow, false, deltaTime, ECC_WorldStatic, 3.f);
+	skeletal->SetPhysicsLinearVelocity(gravity,true);
+	GetCharacterMovement()->AddForce(gravity);
+	/*
+	
+	*/
+	//this->GetMovementComponent()->Velocity += gravity;
 	//this->LaunchCharacter(,false,false);
 }
 
