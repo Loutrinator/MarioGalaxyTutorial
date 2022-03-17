@@ -55,6 +55,7 @@ void APlanetPawn::Tick(float DeltaTime)
 	FVector gravity = -up * 9.81f * GravityScale;
 	DrawDebugLine(GetWorld(), pos, pos + gravity*100, FColor::Yellow, false, DeltaTime, ECC_WorldStatic, 3.f);
 	mesh->SetPhysicsLinearVelocity(gravity,true);
+	mesh->SetPhysicsAngularVelocityInDegrees(FVector(0));
 	//GetCharacterMovement()->AddForce(gravity);
 }
 
