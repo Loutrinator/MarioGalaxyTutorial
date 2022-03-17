@@ -15,5 +15,11 @@ class MARIOGALAXYTUTORIAL_API AEscapingPlanetPawn : public APlanetPawn
 	GENERATED_BODY()
 
 public:
+	
+	UPROPERTY(EditAnywhere)
+	float speed = 5.f;
+	
+	UPROPERTY(EditAnywhere)
+	float playerEscapeDistance = 400.0f;
 	virtual void Tick(float deltaTime) override;
 };

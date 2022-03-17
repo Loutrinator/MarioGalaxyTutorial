@@ -3,13 +3,28 @@
 
 #include "EscapingPlanetPawn.h"
 
+#include <string>
+
+#include "EngineUtils.h"
+#include "PlanetCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 void AEscapingPlanetPawn::Tick(float deltaTime)
 {
 	Super::Tick(deltaTime);
-	float speed = 1;
 
-	float playerDist = GetDistanceTo(GetWorld()->GetFirstPlayerController());
-	if(playerDist > 10) return;
+	APlanetCharacter* planetCharacter = nullptr;
+	for (TActorIterator<APlanetCharacter> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+	{
+		planetCharacter = Cast<APlanetCharacter>(*ActorItr);
+		if (planetCharacter)
+		{
+			break;
+		}
+	}
+	if(planetCharacter == nullptr) return;
+	float playerDist = GetDistanceTo(planetCharacter);
+	if(playerDist > playerEscapeDistance) return;
 
 	auto playerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	auto direction = GetActorLocation() - playerLocation;

@@ -35,7 +35,7 @@ void APlanetCharacter::Tick(float DeltaTime)
 
 void APlanetCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, "SetupPlayerInputComponent");
+	//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, "SetupPlayerInputComponent");
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlanetCharacter::Jump);
