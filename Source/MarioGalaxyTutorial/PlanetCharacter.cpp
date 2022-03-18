@@ -3,6 +3,8 @@
 
 #include "PlanetCharacter.h"
 
+#include "GameFramework/RootMotionSource.h"
+
 APlanetCharacter::APlanetCharacter()
 {
 	capsule = FindComponentByClass<UCapsuleComponent>();
@@ -15,6 +17,7 @@ void APlanetCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector zero(0, 0, 0);
 	ForwardMovementDirection = FMath::Lerp(ForwardMovementDirection, zero, DeltaTime * LerpSpeed);
+	JumpDirection = FMath::Lerp(JumpDirection, zero, DeltaTime * JumpLerpSpeed);
 	RotationValue = FMath::Lerp(RotationValue, 0.f, DeltaTime * LerpSpeed);
 
 	if (enableRotation)
@@ -26,7 +29,8 @@ void APlanetCharacter::Tick(float DeltaTime)
 
 	if (enableMovement)
 	{
-		const FVector NewLocation = GetActorLocation() + (ForwardMovementDirection * DeltaTime * MovementSpeed);
+		const FVector NewLocation = GetActorLocation() + (ForwardMovementDirection * DeltaTime * MovementSpeed) + JumpDirection * JumpForce * DeltaTime;
+		
 		SetActorLocation(NewLocation);
 	}
 	//capsule->SetPhysicsAngularVelocity(FVector());
@@ -38,7 +42,7 @@ void APlanetCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Green, "SetupPlayerInputComponent");
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlanetCharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlanetCharacter::Jump);
 	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlanetCharacter::MoveForward);
@@ -88,6 +92,14 @@ void APlanetCharacter::MoveRight(float Value)
 		// add movement in that direction
 		RotationValue = Value;
 	}
+}
+
+void APlanetCharacter::Jump()
+{
+	FVector Direction = GetActorForwardVector();
+	Direction += GetActorUpVector()*0.7f;
+	Direction.Normalize();
+	JumpDirection = Direction;
 }
 
 int APlanetCharacter::GetCatchedCount()
