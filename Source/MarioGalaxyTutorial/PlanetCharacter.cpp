@@ -3,6 +3,8 @@
 
 #include "PlanetCharacter.h"
 
+#include "Blueprint/WidgetBlueprintLibrary.h"
+
 APlanetCharacter::APlanetCharacter()
 {
 	capsule = FindComponentByClass<UCapsuleComponent>();
@@ -98,9 +100,5 @@ int APlanetCharacter::GetCatchedCount()
 void APlanetCharacter::CatchEscapingPawn()
 {
 	++nbCatched;
-}
-
-float APlanetCharacter::AddFloats(float fA, float fB)
-{
-	return fA + fB;
+	delegateUpdateText.Broadcast(FString::FromInt(nbCatched));
 }

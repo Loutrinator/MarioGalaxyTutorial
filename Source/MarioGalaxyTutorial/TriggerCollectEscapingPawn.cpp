@@ -11,6 +11,7 @@ void ATriggerCollectEscapingPawn::OnOverlapBegin(AActor* Actor, AActor* other)
 	{
 		APlanetCharacter* planetCharacter = Cast<APlanetCharacter>(other);
 		// todo planetCharacter collects this item
+		planetCharacter->CatchEscapingPawn();
 		Actor->GetParentActor()->Destroy();
 	}
 }

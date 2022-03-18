@@ -11,6 +11,9 @@ class UTextBlock;
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateScoreText, FString, _nbCatched);
+
 UCLASS()
 class MARIOGALAXYTUTORIAL_API APlanetCharacter : public APlanetPawn
 {
@@ -40,8 +43,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	bool enableMovement = true;
 
-	UFUNCTION(BlueprintPure, meta = (DisplayName = "Adds floats", CompactNodeTitle = "Add Floats", Keywords = "Float Add"), Category = Game)
-		static float AddFloats(float fA, float fB);
+	UPROPERTY(BlueprintAssignable)
+	FUpdateScoreText delegateUpdateText;
 	
 	int GetCatchedCount();
 	void CatchEscapingPawn();
