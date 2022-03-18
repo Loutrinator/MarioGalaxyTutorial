@@ -22,6 +22,7 @@ class MARIOGALAXYTUTORIAL_API APlanetCharacter : public APlanetPawn
 private:
 	UCapsuleComponent* capsule;
 	FVector ForwardMovementDirection;
+	FVector JumpDirection;
 	float RotationValue;
 	int nbCatched;
 	
@@ -36,6 +37,10 @@ public:
 	float LerpSpeed = 10.f;
 	UPROPERTY(EditAnywhere)
 	float RotationSpeed = 10.f;
+	UPROPERTY(EditAnywhere)
+	float JumpForce = 10.f;
+	UPROPERTY(EditAnywhere)
+	float JumpLerpSpeed = 10.f;
 	
 	UPROPERTY(EditAnywhere)
 	bool enableRotation = true;
@@ -54,6 +59,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void Jump();
 	// End of APawn interface
 
 };
