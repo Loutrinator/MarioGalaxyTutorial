@@ -69,7 +69,7 @@ void APlanetCharacter::MoveForward(float Value)
 {
 	if ((Controller != nullptr) && (Value != 0.0f))
 	{
-		GEngine->AddOnScreenDebugMessage(0, 0.2f, FColor::Green, "MoveForward");
+		//GEngine->AddOnScreenDebugMessage(0, 0.2f, FColor::Green, "MoveForward");
 
 		// get forward vector
 		const FVector Direction = GetActorForwardVector();
@@ -110,5 +110,5 @@ int APlanetCharacter::GetCatchedCount()
 void APlanetCharacter::CatchEscapingPawn()
 {
 	++nbCatched;
-	delegateUpdateText.Broadcast(FString::FromInt(nbCatched));
+	delegateUpdateText.Broadcast(nbCatched);
 }

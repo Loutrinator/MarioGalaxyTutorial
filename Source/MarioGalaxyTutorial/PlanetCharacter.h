@@ -12,7 +12,7 @@ class UTextBlock;
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateScoreText, FString, _nbCatched);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpdateScoreText, int, _nbCatched);
 
 UCLASS()
 class MARIOGALAXYTUTORIAL_API APlanetCharacter : public APlanetPawn
